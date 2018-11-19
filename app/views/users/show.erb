@@ -2,9 +2,9 @@
 
 <h4>User name: <%=@user.username%></h4>
 
-<h5>Your Tweets</h5>
+<h5>Your Flights</h5>
 <ul>
-  <%@user.tweets.each do |t| %>
-    <li><%=t.content%></li>
+  <%@user.flight_records.each do |flight| %>
+    <li>Date: <%=flight.date%>, Aircraft: <%=flight.aircraft_type%></li>
   <%end%>
 </ul>
