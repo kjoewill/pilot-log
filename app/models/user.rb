@@ -3,6 +3,7 @@ class User < ActiveRecord::Base
   has_many :flight_records
 
   validates_presence_of :username
+  validates_uniqueness_of :username
 
   def slug
     self.username.downcase.strip.gsub(' ', '-').gsub(/[^\w-]/, '')
