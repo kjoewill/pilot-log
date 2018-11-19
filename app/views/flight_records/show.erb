@@ -1,0 +1,12 @@
+<h3>Flight Record Show Page</h3>
+
+<h5>Flight Record</h5>
+<h5>Date:  <%=@flight_record.date%></h5>
+
+<form action="/flight_records/<%= @flight_record.id %>/delete" method="post">
+  <input type="submit" value="Delete">
+</form>
+
+<form action="/flight_records/<%= @flight_record.id %>/edit" method="get">
+  <input type="submit" value="Edit">
+</form>

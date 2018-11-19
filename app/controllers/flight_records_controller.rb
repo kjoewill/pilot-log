@@ -29,10 +29,11 @@ class FlightRecordsController < ApplicationController
     end
   end
 
-  get '/tweets/:id' do
+  get '/flight_records/:id' do
+    binding.pry
     if logged_in?
-      @tweet = Tweet.find(params[:id])
-      erb :"tweets/show"
+      @flight_record = FlightRecord.find(params[:id])
+      erb :"flight_records/show"
     else
       redirect "/login"
     end

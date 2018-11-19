@@ -5,6 +5,6 @@
 <h5>Your Flights</h5>
 <ul>
   <%@user.flight_records.each do |flight| %>
-    <li>Date: <%=flight.date%>, Aircraft: <%=flight.aircraft_type%></li>
+    <li>Date: <%=flight.date%>, Aircraft: <%=flight.aircraft_type%><a href="/flight_records/<%=flight.id%>"> Details</a></li>
   <%end%>
 </ul>
