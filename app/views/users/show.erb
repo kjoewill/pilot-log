@@ -1,0 +1,10 @@
+<h3>User Show Page</h3>
+
+<h4>User name: <%=@user.username%></h4>
+
+<h5>Your Tweets</h5>
+<ul>
+  <%@user.tweets.each do |t| %>
+    <li><%=t.content%></li>
+  <%end%>
+</ul>
