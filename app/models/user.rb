@@ -1,8 +1,8 @@
 class User < ActiveRecord::Base
   has_secure_password
-  has_many :tweets
+  has_many :flight_records
 
-  validates_presence_of :username, :email
+  validates_presence_of :username
 
   def slug
     self.username.downcase.strip.gsub(' ', '-').gsub(/[^\w-]/, '')
