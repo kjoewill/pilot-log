@@ -48,8 +48,11 @@ class UsersController < ApplicationController
   end
 
   get '/users/current_user' do
-    @user = current_user
-    erb :'/users/show'
+    if @user = current_user
+      erb :'/users/show'
+    else
+      redirect '/'
+    end
   end
 
 

@@ -22,6 +22,7 @@ class FlightRecordsController < ApplicationController
 
   get '/flight_records/new' do
     if logged_in?
+      @user = current_user
       erb :"flight_records/new"
     else
       redirect "/login"
@@ -39,7 +40,7 @@ class FlightRecordsController < ApplicationController
     else
       #need an error message here because we could not find it
       binding.pry
-      @user = flight_record.user
+      @user = current_user
       erb :"users/show"
     end
   end

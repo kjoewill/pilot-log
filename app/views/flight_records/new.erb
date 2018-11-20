@@ -1,4 +1,4 @@
-<h1>Create a new Flight record</h1>
+<h2>Create a new Flight record for: <%=@user.username%></h2>
 
 <form action="/flight_records" method="post">
 
@@ -22,9 +22,6 @@
 
   <label>Duration(mins):</label>
   <input  type="integer" name="duration" id="duration"></input><br><br>
-
-
-
 
   <input type="submit" value="Create" id="submit">
 </form>
