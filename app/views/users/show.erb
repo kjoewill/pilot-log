@@ -1,8 +1,10 @@
-<h3>User Show Page</h3>
+<h3>Pilot Log User Home Page</h3>
 
-<h4>User name: <%=@user.username%></h4>
+<h3>for: <%=@user.username%></h3>
 
-<h5>Your Flights</h5>
+<a href="/flight_records/new">Log a new flight</a>
+
+<h4>Previous Flights</h4>
 <ul>
   <%@user.flight_records.each do |flight| %>
     <li>Date: <%=flight.date%>, Aircraft: <%=flight.aircraft_type%><a href="/flight_records/<%=flight.id%>"> Details</a></li>

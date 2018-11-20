@@ -1,9 +1,30 @@
-<h1>Create a new tweet</h1>
+<h1>Create a new Flight record</h1>
 
-<form action="/tweets" method="post">
+<form action="/flight_records" method="post">
 
-  <label>Tweet Content:</label>
-    <input  type="text" name="content" id="content"></input>
+  <label>Flight Date:</label>
+  <input  type="date" name="date" id="date" value=<%=Date.today%>></input><br>
+
+  <label>Aircraft type:</label>
+  <input  type="text" name="aircraft_type" id="aircraft_type"></input><br>
+
+  <label>From:    </label>
+  <input  type="text" name="from" id="from"></input><br>
+
+  <label>To:</label>
+  <input  type="text" name="to" id="to"></input><br>
+
+  <label>Remarks:</label>
+  <input  type="text" name="remarks" id="remarks"></input><br>
+
+  <label>Num Landings:</label>
+  <input  type="text" name="num_landings" id="num_landings"></input><br>
+
+  <label>Duration(mins):</label>
+  <input  type="integer" name="duration" id="duration"></input><br><br>
+
+
+
 
   <input type="submit" value="Create" id="submit">
 </form>

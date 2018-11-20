@@ -10,27 +10,26 @@ class FlightRecordsController < ApplicationController
     end
   end
 
-  post '/tweets' do
-    @tweet = Tweet.create(params)
-    @tweet.user = current_user
-    if @tweet.save
-      redirect to "/tweets/#{@tweet.id}"
+  post '/flight_records' do
+    binding.pry
+    @flight_record = FlightRecord.create(params)
+    @flight_record.user = current_user
+    if @flight_record.save
+      redirect to "/flight_records/#{@flight_record.id}"
     else
-      redirect "tweets/new"
+      redirect "flight_records/new"
     end
   end
 
-
-  get '/tweets/new' do
+  get '/flight_records/new' do
     if logged_in?
-      erb :"tweets/new"
+      erb :"flight_records/new"
     else
       redirect "/login"
     end
   end
 
   get '/flight_records/:id' do
-    binding.pry
     if logged_in?
       @flight_record = FlightRecord.find(params[:id])
       erb :"flight_records/show"
@@ -62,12 +61,15 @@ class FlightRecordsController < ApplicationController
     end
   end
 
-  post '/tweets/:id/delete' do
-    tweet = Tweet.find(params[:id])
-    if tweet.user == current_user
-      Tweet.destroy(params[:id])
+  post '/flight_records/:id/delete' do
+    flight_record = FlightRecord.find(params[:id])
+    if flight_record.user == current_user
+      FlightRecord.destroy(params[:id])
+      @user = flight_record.user
+      erb :"users/show"
+    else
+      redirect "/login"
     end
-    redirect "/tweets"
   end
 
 end
