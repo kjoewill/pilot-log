@@ -11,7 +11,6 @@ class FlightRecordsController < ApplicationController
   end
 
   post '/flight_records' do
-    binding.pry
     @flight_record = FlightRecord.create(params)
     @flight_record.user = current_user
     if @flight_record.save
@@ -30,24 +29,30 @@ class FlightRecordsController < ApplicationController
   end
 
   get '/flight_records/:id' do
-    if logged_in?
-      @flight_record = FlightRecord.find(params[:id])
-      erb :"flight_records/show"
+    if @flight_record = FlightRecord.find(params[:id])
+      if @flight_record.user == current_user
+        erb :"flight_records/show"
+      else
+        @user = current_user
+        erb :"users/show"
+      end
     else
-      redirect "/login"
+      @user = flight_record.user
+      erb :"users/show"
     end
   end
 
   get '/flight_records/:id/edit' do
-    if logged_in?
-      @flight_record = FlightRecord.find(params[:id])
+    if @flight_record = FlightRecord.find(params[:id])
       if @flight_record.user == current_user
         erb :"flight_records/edit"
       else
-        redirect "/login"
+        @user = current_user
+        erb :"users/show"
       end
     else
-      redirect "/login"
+      @user = current_user
+      erb :"users/show"
     end
   end
 
@@ -65,11 +70,8 @@ class FlightRecordsController < ApplicationController
     flight_record = FlightRecord.find(params[:id])
     if flight_record.user == current_user
       FlightRecord.destroy(params[:id])
-      @user = flight_record.user
-      erb :"users/show"
-    else
-      redirect "/login"
     end
+    redirect "users/#{flight_record.user.slug}"
   end
 
 end
