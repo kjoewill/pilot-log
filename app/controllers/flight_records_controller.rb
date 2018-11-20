@@ -57,7 +57,7 @@ class FlightRecordsController < ApplicationController
     if @flight_record.save
       erb :"flight_records/show"
     else
-      redirect "flight_record/#{@flight_record.id}/edit"
+      redirect "flight_records/#{@flight_record.id}/edit"
     end
   end
 

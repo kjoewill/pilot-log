@@ -6,7 +6,7 @@
   <input  type="date" name="date" id="date" value=<%=Date.today%>></input><br>
 
   <label>Aircraft type:</label>
-  <input  type="text" name="aircraft_type" id="aircraft_type" value="<%=@flight_record.date%>"></input><br>
+  <input  type="text" name="aircraft_type" id="aircraft_type" value="<%=@flight_record.aircraft_type%>"></input><br>
 
   <label>From:    </label>
   <input  type="text" name="from" id="from"value="<%=@flight_record.from%>"></input><br>
@@ -24,5 +24,5 @@
   <input  type="integer" name="duration" id="duration" value="<%=@flight_record.duration%>"></input><br><br>
 
 
-  <input type="submit" value="Edit" id="submit">
+  <input type="submit" value="Update" id="submit">
 </form>
