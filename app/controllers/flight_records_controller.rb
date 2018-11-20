@@ -38,26 +38,26 @@ class FlightRecordsController < ApplicationController
     end
   end
 
-  get '/tweets/:id/edit' do
+  get '/flight_records/:id/edit' do
     if logged_in?
-      @tweet = Tweet.find(params[:id])
-      if @tweet.user == current_user
-        erb :"tweets/edit"
+      @flight_record = FlightRecord.find(params[:id])
+      if @flight_record.user == current_user
+        erb :"flight_records/edit"
       else
-        redirect "/tweets"
+        redirect "/login"
       end
     else
       redirect "/login"
     end
   end
 
-  post '/tweets/:id' do
-    @tweet = Tweet.find(params[:id])
-    @tweet.content = params[:content]
-    if @tweet.save
-      erb :"tweets/show"
+  post '/flight_records/:id' do
+    @flight_record = FlightRecord.find(params[:id])
+    @flight_record.update(params)
+    if @flight_record.save
+      erb :"flight_records/show"
     else
-      redirect "tweets/#{@tweet.id}/edit"
+      redirect "flight_record/#{@flight_record.id}/edit"
     end
   end
 

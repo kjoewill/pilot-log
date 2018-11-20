@@ -2,6 +2,11 @@
 
 <h5>Flight Record</h5>
 <h5>Date:  <%=@flight_record.date%></h5>
+<h5>Aircraft type:  <%=@flight_record.aircraft_type%></h5>
+<h5>From:  <%=@flight_record.from%></h5>
+<h5>To:  <%=@flight_record.to%></h5>
+<h5>Num Landings:  <%=@flight_record.num_landings%></h5>
+<h5>Duration:  <%=@flight_record.duration%></h5>
 
 <form action="/flight_records/<%= @flight_record.id %>/delete" method="post">
   <input type="submit" value="Delete">

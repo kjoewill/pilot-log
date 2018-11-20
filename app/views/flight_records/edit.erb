@@ -1,9 +1,28 @@
-<h1>Edit Tweet</h1>
+<h1>Edit Flight Record</h1>
 
-<form action="/tweets/<%=@tweet.id%>" method="POST">
+<form action="/flight_records/<%=@flight_record.id%>" method="POST">
 
-  <label>Tweet Content:</label>
-    <input  type="text" name="content" id="content" value="<%=@tweet.content%>"></input>
+  <label>Flight Date:</label>
+  <input  type="date" name="date" id="date" value=<%=Date.today%>></input><br>
+
+  <label>Aircraft type:</label>
+  <input  type="text" name="aircraft_type" id="aircraft_type" value="<%=@flight_record.date%>"></input><br>
+
+  <label>From:    </label>
+  <input  type="text" name="from" id="from"value="<%=@flight_record.from%>"></input><br>
+
+  <label>To:</label>
+  <input  type="text" name="to" id="to" value="<%=@flight_record.to%>"></input><br>
+
+  <label>Remarks:</label>
+  <input  type="text" name="remarks" id="remarks" value="<%=@flight_record.remarks%>"></input><br>
+
+  <label>Num Landings:</label>
+  <input  type="text" name="num_landings" id="num_landings" value="<%=@flight_record.num_landings%>"></input><br>
+
+  <label>Duration(mins):</label>
+  <input  type="integer" name="duration" id="duration" value="<%=@flight_record.duration%>"></input><br><br>
+
 
   <input type="submit" value="Edit" id="submit">
 </form>
