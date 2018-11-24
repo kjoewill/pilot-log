@@ -7,9 +7,10 @@ describe ApplicationController do
     it 'loads the homepage' do
       get '/'
       expect(last_response.status).to eq(200)
-      expect(last_response.body).to include("Welcome to Fwitter")
+      expect(last_response.body).to include("Welcome to Pilot Log Book")
     end
   end
+
 
   describe "Signup Page" do
 
@@ -18,14 +19,14 @@ describe ApplicationController do
       expect(last_response.status).to eq(200)
     end
 
-    it 'signup directs user to twitter index' do
+    it 'signup directs user to user index' do
       params = {
         :username => "skittles123",
         :email => "skittles@aol.com",
         :password => "rainbows"
       }
       post '/signup', params
-      expect(last_response.location).to include("/tweets")
+      expect(last_response.body).to include("Home Page for:")
     end
 
     it 'does not let a user sign up without a username' do
@@ -35,17 +36,7 @@ describe ApplicationController do
         :password => "rainbows"
       }
       post '/signup', params
-      expect(last_response.location).to include('/signup')
-    end
-
-    it 'does not let a user sign up without an email' do
-      params = {
-        :username => "skittles123",
-        :email => "",
-        :password => "rainbows"
-      }
-      post '/signup', params
-      expect(last_response.location).to include('/signup')
+      expect(last_response.body).to include('Sign Up')
     end
 
     it 'does not let a user sign up without a password' do
@@ -55,21 +46,21 @@ describe ApplicationController do
         :password => ""
       }
       post '/signup', params
-      expect(last_response.location).to include('/signup')
+      expect(last_response.body).to include('Sign Up')
     end
 
     it 'creates a new user and logs them in on valid submission and does not let a logged in user view the signup page' do
       params = {
         :username => "skittles123",
-        :email => "skittles@aol.com",
         :password => "rainbows"
       }
       post '/signup', params
       get '/signup'
-      expect(last_response.location).to include('/tweets')
+      expect(last_response.body).to include('Home Page for:')
     end
   end
 
+=begin
   describe "login" do
     it 'loads the login page' do
       get '/login'
@@ -412,4 +403,6 @@ describe ApplicationController do
       end
     end
   end
+
+=end
 end
