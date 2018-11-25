@@ -60,41 +60,39 @@ describe ApplicationController do
     end
   end
 
-=begin
   describe "login" do
     it 'loads the login page' do
       get '/login'
       expect(last_response.status).to eq(200)
     end
 
-    it 'loads the tweets index after login' do
-      user = User.create(:username => "becky567", :email => "starz@aol.com", :password => "kittens")
+    it 'loads the user index after login' do
+      user = User.create(:username => "becky567", :password => "kittens")
       params = {
         :username => "becky567",
         :password => "kittens"
       }
       post '/login', params
-      expect(last_response.status).to eq(302)
-      follow_redirect!
       expect(last_response.status).to eq(200)
-      expect(last_response.body).to include("Welcome,")
+      expect(last_response.body).to include("Home Page for: becky567")
     end
 
     it 'does not let user view login page if already logged in' do
-      user = User.create(:username => "becky567", :email => "starz@aol.com", :password => "kittens")
+      user = User.create(:username => "becky567", :password => "kittens")
       params = {
         :username => "becky567",
         :password => "kittens"
       }
       post '/login', params
       get '/login'
-      expect(last_response.location).to include("/tweets")
+      expect(last_response.body).to include("Home Page for: becky567")
     end
   end
 
+
   describe "logout" do
     it "lets a user logout if they are already logged in" do
-      user = User.create(:username => "becky567", :email => "starz@aol.com", :password => "kittens")
+      user = User.create(:username => "becky567", :password => "kittens")
 
       params = {
         :username => "becky567",
@@ -102,12 +100,12 @@ describe ApplicationController do
       }
       post '/login', params
       get '/logout'
-      expect(last_response.location).to include("/login")
+      expect(last_response.body).to include("Welcome to Pilot Log Book")
     end
 
     it 'does not let a user logout if not logged in' do
       get '/logout'
-      expect(last_response.location).to include("/")
+      expect(last_response.body).to include("Welcome to Pilot Log Book")
     end
 
     it 'does not load /tweets if user not logged in' do
@@ -115,31 +113,47 @@ describe ApplicationController do
       expect(last_response.location).to include("/login")
     end
 
-    it 'does load /tweets if user is logged in' do
-      user = User.create(:username => "becky567", :email => "starz@aol.com", :password => "kittens")
-
+    it 'does load user index if user is logged in' do
+      user = User.create(:username => "becky567", :password => "kittens")
 
       visit '/login'
 
       fill_in(:username, :with => "becky567")
       fill_in(:password, :with => "kittens")
       click_button 'submit'
-      expect(page.current_path).to eq('/tweets')
+      get '/users/current_user'
+      expect(page.status_code).to eq(200)
+      expect(page.body).to include("Home Page for:")
     end
   end
+
+
 
   describe 'user show page' do
-    it 'shows all a single users tweets' do
-      user = User.create(:username => "becky567", :email => "starz@aol.com", :password => "kittens")
-      tweet1 = Tweet.create(:content => "tweeting!", :user_id => user.id)
-      tweet2 = Tweet.create(:content => "tweet tweet tweet", :user_id => user.id)
-      get "/users/#{user.slug}"
+    it 'shows all a single users index page' do
+      k2 = User.create(username: "K2", password: "K2")
 
-      expect(last_response.body).to include("tweeting!")
-      expect(last_response.body).to include("tweet tweet tweet")
+      k2.flight_records << FlightRecord.create(
+        date: Date.today, aircraft_type: "SR20", from: "KFLY", to: "KCOS", remarks: "K2's flight", num_landings: 1, duration: 60)
+
+      k2.flight_records << FlightRecord.create(
+        date: Date.today, aircraft_type: "SR20", from: "KFLY", to: "KCOS", remarks: "Fun flight", num_landings: 1, duration: 60)
+
+      visit '/login'
+
+      fill_in(:username, :with => "K2")
+      fill_in(:password, :with => "K2")
+      click_button 'submit'
+
+      get "/users/current_user"
+
+      expect(page.body).to include("K2")
+      expect(page.body).to include(Date.today.to_s)
 
     end
   end
+
+=begin
 
   describe 'index action' do
     context 'logged in' do
