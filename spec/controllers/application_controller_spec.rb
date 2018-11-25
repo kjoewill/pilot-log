@@ -127,8 +127,6 @@ describe ApplicationController do
     end
   end
 
-
-
   describe 'user show page' do
     it 'shows all a single users index page' do
       k2 = User.create(username: "K2", password: "K2")
@@ -153,52 +151,46 @@ describe ApplicationController do
     end
   end
 
-=begin
 
-  describe 'index action' do
+
+  describe 'user show action' do
     context 'logged in' do
-      it 'lets a user view the tweets index if logged in' do
-        user1 = User.create(:username => "becky567", :email => "starz@aol.com", :password => "kittens")
-        tweet1 = Tweet.create(:content => "tweeting!", :user_id => user1.id)
-
-        user2 = User.create(:username => "silverstallion", :email => "silver@aol.com", :password => "horses")
-        tweet2 = Tweet.create(:content => "look at this tweet", :user_id => user2.id)
+      it 'lets a user view their home page if logged in' do
+        k2 = User.create(username: "K2", password: "K2")
+        k2.flight_records << FlightRecord.create(
+          date: Date.today, aircraft_type: "SR20", from: "KFLY", to: "KCOS", remarks: "K2's flight", num_landings: 1, duration: 60)
+        k2.flight_records << FlightRecord.create(
+          date: Date.today, aircraft_type: "SR20", from: "KFLY", to: "KCOS", remarks: "Fun flight", num_landings: 1, duration: 60)
 
         visit '/login'
 
-        fill_in(:username, :with => "becky567")
-        fill_in(:password, :with => "kittens")
+        fill_in(:username, :with => "K2")
+        fill_in(:password, :with => "K2")
         click_button 'submit'
-        visit "/tweets"
-        expect(page.body).to include(tweet1.content)
-        expect(page.body).to include(tweet2.content)
+
+        expect(page.body).to include("K2")
+        expect(page.body).to include(Date.today.to_s)
+
       end
     end
 
     context 'logged out' do
-      it 'does not let a user view the tweets index if not logged in' do
-        get '/tweets'
-        expect(last_response.location).to include("/login")
+      it 'does not let a user view their home page when not logged in' do
+        get "/users/current_user"
+        follow_redirect!
+        expect(last_response.body).to include("Welcome to Pilot Log Book")
       end
     end
   end
 
+
+
+
   describe 'new action' do
     context 'logged in' do
-      it 'lets user view new tweet form if logged in' do
-        user = User.create(:username => "becky567", :email => "starz@aol.com", :password => "kittens")
 
-        visit '/login'
-
-        fill_in(:username, :with => "becky567")
-        fill_in(:password, :with => "kittens")
-        click_button 'submit'
-        visit '/tweets/new'
-        expect(page.status_code).to eq(200)
-      end
-
-      it 'lets user create a tweet if they are logged in' do
-        user = User.create(:username => "becky567", :email => "starz@aol.com", :password => "kittens")
+      it 'lets user create a FR if they are logged in' do
+        user = User.create(:username => "becky567", :password => "kittens")
 
         visit '/login'
 
@@ -206,42 +198,30 @@ describe ApplicationController do
         fill_in(:password, :with => "kittens")
         click_button 'submit'
 
-        visit '/tweets/new'
-        fill_in(:content, :with => "tweet!!!")
-        click_button 'submit'
+        visit '/flight_records/new'
+        fill_in(:date, :with => Date.today.to_s)
+        fill_in(:aircraft_type, :with => "SR20")
+        fill_in(:from, :with => "KFLY")
+        fill_in(:to, :with => "KCOS")
+        fill_in(:remarks, :with => "Test suite remark")
+        fill_in(:num_landings, :with => 1)
+        fill_in(:duration, :with => 20)
 
-        user = User.find_by(:username => "becky567")
-        tweet = Tweet.find_by(:content => "tweet!!!")
-        expect(tweet).to be_instance_of(Tweet)
-        expect(tweet.user_id).to eq(user.id)
-        expect(page.status_code).to eq(200)
-      end
 
-      it 'does not let a user tweet from another user' do
-        user = User.create(:username => "becky567", :email => "starz@aol.com", :password => "kittens")
-        user2 = User.create(:username => "silverstallion", :email => "silver@aol.com", :password => "horses")
-
-        visit '/login'
-
-        fill_in(:username, :with => "becky567")
-        fill_in(:password, :with => "kittens")
-        click_button 'submit'
-
-        visit '/tweets/new'
-
-        fill_in(:content, :with => "tweet!!!")
         click_button 'submit'
 
         user = User.find_by(:id=> user.id)
-        user2 = User.find_by(:id => user2.id)
-        tweet = Tweet.find_by(:content => "tweet!!!")
-        expect(tweet).to be_instance_of(Tweet)
-        expect(tweet.user_id).to eq(user.id)
-        expect(tweet.user_id).not_to eq(user2.id)
+        fr = FlightRecord.find_by(:remarks => "Test suite remark")
+        expect(fr).to be_instance_of(FlightRecord)
+        expect(fr.user_id).to eq(user.id)
+
+        expect(page.status_code).to eq(200)
+
       end
 
-      it 'does not let a user create a blank tweet' do
-        user = User.create(:username => "becky567", :email => "starz@aol.com", :password => "kittens")
+
+      it 'does not let a user create a FR with a blank from: field' do
+        user = User.create(:username => "becky567", :password => "kittens")
 
         visit '/login'
 
@@ -251,21 +231,31 @@ describe ApplicationController do
 
         visit '/tweets/new'
 
-        fill_in(:content, :with => "")
+        visit '/flight_records/new'
+        fill_in(:date, :with => Date.today.to_s)
+        fill_in(:aircraft_type, :with => "SR20")
+        fill_in(:from, :with => "")
+        fill_in(:to, :with => "KCOS")
+        fill_in(:remarks, :with => "I have no from: field")
+        fill_in(:num_landings, :with => 1)
+        fill_in(:duration, :with => 20)
+
         click_button 'submit'
 
-        expect(Tweet.find_by(:content => "")).to eq(nil)
-        expect(page.current_path).to eq("/tweets/new")
+        expect(FlightRecord.find_by(:remarks => "I have no from: field")).to eq(nil)
+        expect(page.current_path).to eq("/flight_records/new")
       end
     end
 
     context 'logged out' do
       it 'does not let user view new tweet form if not logged in' do
-        get '/tweets/new'
+        get '/flight_records/new'
         expect(last_response.location).to include("/login")
       end
     end
   end
+
+=begin
 
   describe 'show action' do
     context 'logged in' do
