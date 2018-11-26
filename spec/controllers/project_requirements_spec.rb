@@ -82,6 +82,7 @@ describe ApplicationController do
       }
       post '/login', params
       get '/login'
+      follow_redirect!
       expect(last_response.body).to include("Home Page for: Raptor")
     end
   end
