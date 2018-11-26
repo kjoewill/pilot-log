@@ -12,7 +12,7 @@ describe ApplicationController do
   end
 
 
-  describe "Signup Page" do
+  describe "Req #5 -  Sign up, sign in, sign out" do
 
     it 'loads the signup page' do
       get '/signup'
@@ -21,111 +21,126 @@ describe ApplicationController do
 
     it 'signup directs user to user index' do
       params = {
-        :username => "skittles123",
-        :email => "skittles@aol.com",
-        :password => "rainbows"
+        :username => "Raptor",
+        :password => "Raptor"
       }
       post '/signup', params
-      expect(last_response.body).to include("Home Page for:")
+      expect(last_response.body).to include("Home Page for: Raptor")
     end
 
     it 'does not let a user sign up without a username' do
       params = {
         :username => "",
-        :email => "skittles@aol.com",
-        :password => "rainbows"
+        :password => "Raptor"
       }
       post '/signup', params
-      expect(last_response.body).to include('Sign Up')
+      expect(last_response.location).to include('/signup')
     end
 
     it 'does not let a user sign up without a password' do
       params = {
-        :username => "skittles123",
-        :email => "skittles@aol.com",
+        :username => "Raptor",
         :password => ""
       }
       post '/signup', params
-      expect(last_response.body).to include('Sign Up')
+      expect(last_response.location).to include('/signup')
     end
 
     it 'creates a new user and logs them in on valid submission and does not let a logged in user view the signup page' do
       params = {
-        :username => "skittles123",
-        :password => "rainbows"
+        :username => "Raptor",
+        :password => "Raptor"
       }
       post '/signup', params
       get '/signup'
-      expect(last_response.body).to include('Home Page for:')
+      expect(last_response.body).to include('Home Page for: Raptor')
     end
   end
 
-  describe "login" do
+  describe "Req #5 - login" do
     it 'loads the login page' do
       get '/login'
       expect(last_response.status).to eq(200)
     end
 
     it 'loads the user index after login' do
-      user = User.create(:username => "becky567", :password => "kittens")
+      user = User.create(:username => "Raptor", :password => "Raptor")
       params = {
-        :username => "becky567",
-        :password => "kittens"
+        :username => "Raptor",
+        :password => "Raptor"
       }
       post '/login', params
-      expect(last_response.status).to eq(200)
-      expect(last_response.body).to include("Home Page for: becky567")
+      follow_redirect!
+      expect(last_response.body).to include("Home Page for: Raptor")
     end
 
     it 'does not let user view login page if already logged in' do
-      user = User.create(:username => "becky567", :password => "kittens")
+      user = User.create(:username => "Raptor", :password => "Raptor")
       params = {
-        :username => "becky567",
-        :password => "kittens"
+        :username => "Raptor",
+        :password => "Raptor"
       }
       post '/login', params
       get '/login'
-      expect(last_response.body).to include("Home Page for: becky567")
+      expect(last_response.body).to include("Home Page for: Raptor")
     end
   end
 
-
-  describe "logout" do
+  describe "Req #5 - logout" do
     it "lets a user logout if they are already logged in" do
-      user = User.create(:username => "becky567", :password => "kittens")
+      user = User.create(:username => "Raptor", :password => "Raptor")
 
       params = {
-        :username => "becky567",
-        :password => "kittens"
+        :username => "Raptor",
+        :password => "Raptor"
       }
       post '/login', params
       get '/logout'
+      follow_redirect!
       expect(last_response.body).to include("Welcome to Pilot Log Book")
     end
 
     it 'does not let a user logout if not logged in' do
       get '/logout'
+      follow_redirect!
       expect(last_response.body).to include("Welcome to Pilot Log Book")
     end
 
-    it 'does not load /tweets if user not logged in' do
-      get '/tweets'
-      expect(last_response.location).to include("/login")
+    it 'does not load user home page if user not logged in' do
+      get "/users/1"
+      follow_redirect!
+      expect(last_response.body).to include("Welcome to Pilot Log Book")
     end
 
     it 'does load user index if user is logged in' do
-      user = User.create(:username => "becky567", :password => "kittens")
+      user = User.create(:username => "Raptor", :password => "Raptor")
 
       visit '/login'
 
-      fill_in(:username, :with => "becky567")
-      fill_in(:password, :with => "kittens")
+      fill_in(:username, :with => "Raptor")
+      fill_in(:password, :with => "Raptor")
       click_button 'submit'
       get '/users/current_user'
       expect(page.status_code).to eq(200)
       expect(page.body).to include("Home Page for:")
     end
   end
+
+  describe 'Req #6 - Validate uniqueness of user login attribute (username)' do
+    it 'does not let a user sign up with a duplicate username' do
+      user = User.create(:username => "Raptor", :password => "Raptor")
+
+      params = {
+        :username => "Raptor",
+        :password => "Raptor"
+      }
+      post '/signup', params
+      expect(last_response.location).to include('/signup')
+    end
+  end
+
+
+
 
   describe 'user show page' do
     it 'shows all a single users index page' do
@@ -151,7 +166,69 @@ describe ApplicationController do
     end
   end
 
+  describe 'Req #7 Logged in user CRUD against Flight Records' do
 
+    context 'create' do
+      it 'lets user create a FR' do
+        user = User.create(:username => "Raptor", :password => "Raptor")
+
+        visit '/login'
+
+        fill_in(:username, :with => "Raptor")
+        fill_in(:password, :with => "Raptor")
+        click_button 'submit'
+
+        visit '/flight_records/new'
+        fill_in(:date, :with => Date.today.to_s)
+        fill_in(:aircraft_type, :with => "SR20")
+        fill_in(:from, :with => "KFLY")
+        fill_in(:to, :with => "KCOS")
+        fill_in(:remarks, :with => "Test suite remark")
+        fill_in(:num_landings, :with => 1)
+        fill_in(:duration, :with => 20)
+
+
+        click_button 'submit'
+
+        user = User.find_by(:id=> user.id)
+        fr = FlightRecord.find_by(:remarks => "Test suite remark")
+        expect(fr).to be_instance_of(FlightRecord)
+        expect(fr.user_id).to eq(user.id)
+
+        expect(page.status_code).to eq(200)
+      end
+    end
+
+    context 'read' do
+      it 'lets a user view their home page if logged in' do
+        k2 = User.create(username: "K2", password: "K2")
+        k2.flight_records << FlightRecord.create(
+          date: Date.today, aircraft_type: "SR20", from: "KFLY", to: "KCOS", remarks: "K2's flight", num_landings: 1, duration: 60)
+        k2.flight_records << FlightRecord.create(
+          date: Date.today, aircraft_type: "SR20", from: "KFLY", to: "KCOS", remarks: "Fun flight", num_landings: 1, duration: 60)
+
+        visit '/login'
+
+        fill_in(:username, :with => "K2")
+        fill_in(:password, :with => "K2")
+        click_button 'submit'
+
+        expect(page.body).to include("K2")
+        expect(page).to have_content(Date.today.to_s, count: 2)
+        expect(page).to have_content("SR20", count: 2)
+
+      end
+    end
+
+    context 'update' do
+
+    end
+
+    context 'delete' do
+
+    end
+
+  end
 
   describe 'user show action' do
     context 'logged in' do

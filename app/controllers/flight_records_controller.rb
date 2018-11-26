@@ -77,7 +77,8 @@ class FlightRecordsController < ApplicationController
       FlightRecord.destroy(params[:id])
     end
       @user = current_user
-      erb :"users/show"
+      #erb :"users/show"
+      redirect "/users/#{@user.id}"
   end
 
 end

@@ -11,8 +11,7 @@ class UsersController < ApplicationController
 
   post "/signup" do
 		user = User.create(params)
-
-    if user.save && user.authenticate(params[:password])
+    if user.save && user.authenticate(params[:password]) && user.authenticate(params[:username])
       session[:user_id] = user.id
       @user = current_user
       erb :"users/show"
@@ -35,8 +34,9 @@ class UsersController < ApplicationController
 
     if user && user.authenticate(params[:password])
       session[:user_id] = user.id
-      @user = current_user
-      erb :"users/show"
+      #@user = current_user
+      #erb :"users/show"
+      redirect "/users/#{user.id}"
     else
       redirect "/login"
     end
@@ -44,17 +44,24 @@ class UsersController < ApplicationController
 
   get "/logout" do
     session.clear
-    erb :"index"
+    #erb :"index"
+    redirect '/'
   end
 
-  get '/users/current_user' do
-    if @user = current_user
-      erb :'/users/show'
+  get '/users/:id' do
+    if logged_in?
+      if @user = User.find(params[:id])
+        if @user.id == current_user.id
+          erb :'/users/show'
+        else
+          redirect '/'
+        end
+      else
+        redirect '/'
+      end
     else
       redirect '/'
     end
   end
-
-
 
 end
