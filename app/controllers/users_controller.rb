@@ -4,8 +4,7 @@ class UsersController < ApplicationController
     if !logged_in?
       erb :"users/signup"
     else
-      @user = current_user
-      erb :"users/show"
+      redirect "/users/#{current_user.id}"
     end
   end
 
@@ -13,8 +12,7 @@ class UsersController < ApplicationController
 		user = User.create(params)
     if user.save && user.authenticate(params[:password]) && user.authenticate(params[:username])
       session[:user_id] = user.id
-      @user = current_user
-      erb :"users/show"
+      redirect "/users/#{user.id}"
 		else
 			redirect "/signup"
 		end
@@ -25,8 +23,6 @@ class UsersController < ApplicationController
       erb :"users/login"
     else
       redirect "/users/#{current_user.id}"
-      #@user = current_user
-      #erb :"users/show"
     end
   end
 

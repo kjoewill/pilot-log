@@ -25,6 +25,7 @@ describe ApplicationController do
         :password => "Raptor"
       }
       post '/signup', params
+      follow_redirect!
       expect(last_response.body).to include("Home Page for: Raptor")
     end
 
@@ -53,6 +54,7 @@ describe ApplicationController do
       }
       post '/signup', params
       get '/signup'
+      follow_redirect!
       expect(last_response.body).to include('Home Page for: Raptor')
     end
   end
