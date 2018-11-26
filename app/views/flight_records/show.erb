@@ -16,6 +16,6 @@
   <input type="submit" value="Edit">
 </form>
 
-<form action="/users/current_user" method="get">
+<form action="/users/<%= @flight_record.user.id %>" method="get">
   <input type="submit" value="Home">
 </form>

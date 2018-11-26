@@ -1,15 +1,5 @@
 class FlightRecordsController < ApplicationController
 
-  get '/tweets' do
-    if logged_in?
-      @tweets = Tweet.all
-      @user = current_user
-      erb :"tweets/index"
-    else
-      redirect "/login"
-    end
-  end
-
   post '/flight_records' do
     @flight_record = FlightRecord.create(params)
     @flight_record.user = current_user
