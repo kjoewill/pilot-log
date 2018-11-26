@@ -34,8 +34,6 @@ class UsersController < ApplicationController
 
     if user && user.authenticate(params[:password])
       session[:user_id] = user.id
-      #@user = current_user
-      #erb :"users/show"
       redirect "/users/#{user.id}"
     else
       redirect "/login"
@@ -44,7 +42,6 @@ class UsersController < ApplicationController
 
   get "/logout" do
     session.clear
-    #erb :"index"
     redirect '/'
   end
 
