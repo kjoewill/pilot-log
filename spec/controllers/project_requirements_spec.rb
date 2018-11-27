@@ -169,7 +169,7 @@ describe ApplicationController do
     end
   end
 
-  describe 'Req #7 Logged in user CRUD against Flight Records' do
+  describe 'Req #7 Logged in user CRUD against owned Flight Records' do
 
     context 'create' do
       it 'lets user create a FR' do
@@ -274,6 +274,54 @@ describe ApplicationController do
 
         click_button 'Delete'
         expect(page).to have_content(Date.today.to_s, count: 1)
+
+      end
+    end
+
+  end
+
+  describe 'Req #8 Logged in user cannot CRUD against others Flight Records' do
+
+    context 'create' do
+      it 'FRs only created in the context of a logged in user' do
+
+      end
+    end
+
+    context 'read' do
+      it 'wont let a user view other user home page' do
+
+      k1 = User.create(username: "K1", password: "K1")
+      k2 = User.create(username: "K2", password: "K2")
+        k2.flight_records << FlightRecord.create(
+          date: Date.today, aircraft_type: "SR20", from: "KFLY", to: "KCOS", remarks: "K2's flight", num_landings: 1, duration: 60)
+        k2.flight_records << FlightRecord.create(
+          date: Date.today, aircraft_type: "SR20", from: "KFLY", to: "KCOS", remarks: "Fun flight", num_landings: 1, duration: 60)
+
+        visit '/login'
+
+        fill_in(:username, :with => "K2")
+        fill_in(:password, :with => "K2")
+        click_button 'submit'
+
+        expect(page.body).to include("K2")
+        expect(page).to have_content(Date.today.to_s, count: 2)
+        expect(page).to have_content("SR20", count: 2)
+
+        visit "/users/#{k1.id}"
+        expect(page.body).to include("Welcome to Pilot Log Book")
+
+      end
+    end
+
+    context 'update' do
+      it 'only allows edits in context of a logged in user ' do
+
+      end
+    end
+
+    context 'delete' do
+      it 'only allows deletes in context of logged in user of owned flight records' do
 
       end
     end
