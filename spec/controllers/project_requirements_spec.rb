@@ -144,31 +144,6 @@ describe ApplicationController do
 
 
 
-
-  describe 'user show page' do
-    it 'shows all a single users index page' do
-      k2 = User.create(username: "K2", password: "K2")
-
-      k2.flight_records << FlightRecord.create(
-        date: Date.today, aircraft_type: "SR20", from: "KFLY", to: "KCOS", remarks: "K2's flight", num_landings: 1, duration: 60)
-
-      k2.flight_records << FlightRecord.create(
-        date: Date.today, aircraft_type: "SR20", from: "KFLY", to: "KCOS", remarks: "Fun flight", num_landings: 1, duration: 60)
-
-      visit '/login'
-
-      fill_in(:username, :with => "K2")
-      fill_in(:password, :with => "K2")
-      click_button 'submit'
-
-      get "/users/current_user"
-
-      expect(page.body).to include("K2")
-      expect(page.body).to include(Date.today.to_s)
-
-    end
-  end
-
   describe 'Req #7 Logged in user CRUD against owned Flight Records' do
 
     context 'create' do
@@ -325,8 +300,134 @@ describe ApplicationController do
 
       end
     end
+  end
+
+  describe 'Req #9 - Validate user input so bad data cannot be persisted to the database' do
+
+    context 'empty fields' do
+
+      it 'will not allow creation of a FR with an empty Aircraft type' do
+        k2 = User.create(username: "K2", password: "K2")
+        k2.flight_records << FlightRecord.create(
+          date: Date.today, aircraft_type: "SR20", from: "KFLY", to: "KCOS", remarks: "K2's flight", num_landings: 1, duration: 60)
+        k2.flight_records << FlightRecord.create(
+          date: Date.today, aircraft_type: "SR20", from: "KFLY", to: "KCOS", remarks: "Fun flight", num_landings: 1, duration: 60)
+
+        visit '/login'
+
+        fill_in(:username, :with => "K2")
+        fill_in(:password, :with => "K2")
+        click_button 'submit'
+
+        visit '/flight_records/new'
+        fill_in(:date, :with => Date.today.to_s)
+        fill_in(:aircraft_type, :with => "")
+        fill_in(:from, :with => "KFLY")
+        fill_in(:to, :with => "KCOS")
+        fill_in(:remarks, :with => "Test suite remark")
+        fill_in(:num_landings, :with => 1)
+        fill_in(:duration, :with => 20)
+
+
+        click_button 'submit'
+
+        expect(page.body).to include('Create a new Flight record')
+
+      end
+
+      it 'will not allow creation of a FR with an empty from: field' do
+        k2 = User.create(username: "K2", password: "K2")
+        k2.flight_records << FlightRecord.create(
+          date: Date.today, aircraft_type: "SR20", from: "KFLY", to: "KCOS", remarks: "K2's flight", num_landings: 1, duration: 60)
+        k2.flight_records << FlightRecord.create(
+          date: Date.today, aircraft_type: "SR20", from: "KFLY", to: "KCOS", remarks: "Fun flight", num_landings: 1, duration: 60)
+
+        visit '/login'
+
+        fill_in(:username, :with => "K2")
+        fill_in(:password, :with => "K2")
+        click_button 'submit'
+
+        visit '/flight_records/new'
+        fill_in(:date, :with => Date.today.to_s)
+        fill_in(:aircraft_type, :with => "SR22")
+        fill_in(:from, :with => "")
+        fill_in(:to, :with => "KCOS")
+        fill_in(:remarks, :with => "Test suite remark")
+        fill_in(:num_landings, :with => 1)
+        fill_in(:duration, :with => 20)
+
+
+        click_button 'submit'
+
+        expect(page.body).to include('Create a new Flight record')
+
+      end
+
+      it 'will not allow creation of a FR with a negative number of landing' do
+        k2 = User.create(username: "K2", password: "K2")
+        k2.flight_records << FlightRecord.create(
+          date: Date.today, aircraft_type: "SR20", from: "KFLY", to: "KCOS", remarks: "K2's flight", num_landings: 1, duration: 60)
+        k2.flight_records << FlightRecord.create(
+          date: Date.today, aircraft_type: "SR20", from: "KFLY", to: "KCOS", remarks: "Fun flight", num_landings: 1, duration: 60)
+
+        visit '/login'
+
+        fill_in(:username, :with => "K2")
+        fill_in(:password, :with => "K2")
+        click_button 'submit'
+
+        visit '/flight_records/new'
+        fill_in(:date, :with => Date.today.to_s)
+        fill_in(:aircraft_type, :with => "SR22")
+        fill_in(:from, :with => "KFLY")
+        fill_in(:to, :with => "KCOS")
+        fill_in(:remarks, :with => "Test suite remark")
+        fill_in(:num_landings, :with => -1)
+        fill_in(:duration, :with => 20)
+
+
+        click_button 'submit'
+
+        expect(page.body).to include('Create a new Flight record')
+
+      end
+
+      it 'will not allow creation of a FR with 0 duration' do
+        k2 = User.create(username: "K2", password: "K2")
+        k2.flight_records << FlightRecord.create(
+          date: Date.today, aircraft_type: "SR20", from: "KFLY", to: "KCOS", remarks: "K2's flight", num_landings: 1, duration: 60)
+        k2.flight_records << FlightRecord.create(
+          date: Date.today, aircraft_type: "SR20", from: "KFLY", to: "KCOS", remarks: "Fun flight", num_landings: 1, duration: 60)
+
+        visit '/login'
+
+        fill_in(:username, :with => "K2")
+        fill_in(:password, :with => "K2")
+        click_button 'submit'
+
+        visit '/flight_records/new'
+        fill_in(:date, :with => Date.today.to_s)
+        fill_in(:aircraft_type, :with => "SR22")
+        fill_in(:from, :with => "KFLY")
+        fill_in(:to, :with => "KCOS")
+        fill_in(:remarks, :with => "Test suite remark")
+        fill_in(:num_landings, :with => 1)
+        fill_in(:duration, :with => 0)
+
+
+        click_button 'submit'
+
+        expect(page.body).to include('Create a new Flight record')
+
+      end
+
+    end
 
   end
+
+
+
 
   describe 'new action' do
     context 'logged in' do
@@ -395,160 +496,7 @@ describe ApplicationController do
         expect(last_response.location).to include("/login")
       end
     end
+
   end
-
-=begin
-
-  describe 'show action' do
-    context 'logged in' do
-      it 'displays a single tweet' do
-
-        user = User.create(:username => "becky567", :email => "starz@aol.com", :password => "kittens")
-        tweet = Tweet.create(:content => "i am a boss at tweeting", :user_id => user.id)
-
-        visit '/login'
-
-        fill_in(:username, :with => "becky567")
-        fill_in(:password, :with => "kittens")
-        click_button 'submit'
-
-        visit "/tweets/#{tweet.id}"
-        expect(page.status_code).to eq(200)
-        expect(page.body).to include("Delete Tweet")
-        expect(page.body).to include(tweet.content)
-        expect(page.body).to include("Edit Tweet")
-      end
-    end
-
-    context 'logged out' do
-      it 'does not let a user view a tweet' do
-        user = User.create(:username => "becky567", :email => "starz@aol.com", :password => "kittens")
-        tweet = Tweet.create(:content => "i am a boss at tweeting", :user_id => user.id)
-        get "/tweets/#{tweet.id}"
-        expect(last_response.location).to include("/login")
-      end
-    end
-  end
-
-  describe 'edit action' do
-    context "logged in" do
-      it 'lets a user view tweet edit form if they are logged in' do
-        user = User.create(:username => "becky567", :email => "starz@aol.com", :password => "kittens")
-        tweet = Tweet.create(:content => "tweeting!", :user_id => user.id)
-        visit '/login'
-
-        fill_in(:username, :with => "becky567")
-        fill_in(:password, :with => "kittens")
-        click_button 'submit'
-        visit '/tweets/1/edit'
-        expect(page.status_code).to eq(200)
-        expect(page.body).to include(tweet.content)
-      end
-
-      it 'does not let a user edit a tweet they did not create' do
-        user1 = User.create(:username => "becky567", :email => "starz@aol.com", :password => "kittens")
-        tweet1 = Tweet.create(:content => "tweeting!", :user_id => user1.id)
-
-        user2 = User.create(:username => "silverstallion", :email => "silver@aol.com", :password => "horses")
-        tweet2 = Tweet.create(:content => "look at this tweet", :user_id => user2.id)
-
-        visit '/login'
-
-        fill_in(:username, :with => "becky567")
-        fill_in(:password, :with => "kittens")
-        click_button 'submit'
-        visit "/tweets/#{tweet2.id}/edit"
-        expect(page.current_path).to include('/tweets')
-      end
-
-      it 'lets a user edit their own tweet if they are logged in' do
-        user = User.create(:username => "becky567", :email => "starz@aol.com", :password => "kittens")
-        tweet = Tweet.create(:content => "tweeting!", :user_id => 1)
-        visit '/login'
-
-        fill_in(:username, :with => "becky567")
-        fill_in(:password, :with => "kittens")
-        click_button 'submit'
-        visit '/tweets/1/edit'
-
-        fill_in(:content, :with => "i love tweeting")
-
-        click_button 'submit'
-        expect(Tweet.find_by(:content => "i love tweeting")).to be_instance_of(Tweet)
-        expect(Tweet.find_by(:content => "tweeting!")).to eq(nil)
-        expect(page.status_code).to eq(200)
-      end
-
-      it 'does not let a user edit a text with blank content' do
-        user = User.create(:username => "becky567", :email => "starz@aol.com", :password => "kittens")
-        tweet = Tweet.create(:content => "tweeting!", :user_id => 1)
-        visit '/login'
-
-        fill_in(:username, :with => "becky567")
-        fill_in(:password, :with => "kittens")
-        click_button 'submit'
-        visit '/tweets/1/edit'
-
-        fill_in(:content, :with => "")
-
-        click_button 'submit'
-        expect(Tweet.find_by(:content => "i love tweeting")).to be(nil)
-        expect(page.current_path).to eq("/tweets/1/edit")
-      end
-    end
-
-    context "logged out" do
-      it 'does not load -- instead redirects to login' do
-        get '/tweets/1/edit'
-        expect(last_response.location).to include("/login")
-      end
-    end
-  end
-
-  describe 'delete action' do
-    context "logged in" do
-      it 'lets a user delete their own tweet if they are logged in' do
-        user = User.create(:username => "becky567", :email => "starz@aol.com", :password => "kittens")
-        tweet = Tweet.create(:content => "tweeting!", :user_id => 1)
-        visit '/login'
-
-        fill_in(:username, :with => "becky567")
-        fill_in(:password, :with => "kittens")
-        click_button 'submit'
-        visit 'tweets/1'
-        click_button "Delete Tweet"
-        expect(page.status_code).to eq(200)
-        expect(Tweet.find_by(:content => "tweeting!")).to eq(nil)
-      end
-
-      it 'does not let a user delete a tweet they did not create' do
-        user1 = User.create(:username => "becky567", :email => "starz@aol.com", :password => "kittens")
-        tweet1 = Tweet.create(:content => "tweeting!", :user_id => user1.id)
-
-        user2 = User.create(:username => "silverstallion", :email => "silver@aol.com", :password => "horses")
-        tweet2 = Tweet.create(:content => "look at this tweet", :user_id => user2.id)
-
-        visit '/login'
-
-        fill_in(:username, :with => "becky567")
-        fill_in(:password, :with => "kittens")
-        click_button 'submit'
-        visit "tweets/#{tweet2.id}"
-        click_button "Delete Tweet"
-        expect(page.status_code).to eq(200)
-        expect(Tweet.find_by(:content => "look at this tweet")).to be_instance_of(Tweet)
-        expect(page.current_path).to include('/tweets')
-      end
-    end
-
-    context "logged out" do
-      it 'does not load let user delete a tweet if not logged in' do
-        tweet = Tweet.create(:content => "tweeting!", :user_id => 1)
-        visit '/tweets/1'
-        expect(page.current_path).to eq("/login")
-      end
-    end
-  end
-
-=end
+  
 end
