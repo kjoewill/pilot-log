@@ -19,43 +19,46 @@ describe ApplicationController do
       expect(last_response.status).to eq(200)
     end
 
-    it 'signup directs user to user index' do
+    it 'signup directs user to user home page' do
       params = {
-        :username => "skittles123",
-        :email => "skittles@aol.com",
-        :password => "rainbows"
+        :username => "K2",
+        :password => "K2"
       }
       post '/signup', params
+      follow_redirect!
       expect(last_response.body).to include("Home Page for:")
     end
 
     it 'does not let a user sign up without a username' do
       params = {
         :username => "",
-        :email => "skittles@aol.com",
         :password => "rainbows"
       }
       post '/signup', params
+      follow_redirect!
       expect(last_response.body).to include('Sign Up')
     end
 
     it 'does not let a user sign up without a password' do
       params = {
         :username => "skittles123",
-        :email => "skittles@aol.com",
         :password => ""
       }
       post '/signup', params
+      follow_redirect!
       expect(last_response.body).to include('Sign Up')
     end
 
     it 'creates a new user and logs them in on valid submission and does not let a logged in user view the signup page' do
       params = {
-        :username => "skittles123",
-        :password => "rainbows"
+        :username => "K2",
+        :password => "K2"
       }
       post '/signup', params
+      follow_redirect!
+      expect(last_response.body).to include('Home Page for:')
       get '/signup'
+      follow_redirect!
       expect(last_response.body).to include('Home Page for:')
     end
   end
@@ -66,14 +69,14 @@ describe ApplicationController do
       expect(last_response.status).to eq(200)
     end
 
-    it 'loads the user index after login' do
+    it 'loads the user home page after login' do
       user = User.create(:username => "becky567", :password => "kittens")
       params = {
         :username => "becky567",
         :password => "kittens"
       }
       post '/login', params
-      expect(last_response.status).to eq(200)
+      follow_redirect!
       expect(last_response.body).to include("Home Page for: becky567")
     end
 
@@ -85,6 +88,7 @@ describe ApplicationController do
       }
       post '/login', params
       get '/login'
+      follow_redirect!
       expect(last_response.body).to include("Home Page for: becky567")
     end
   end
@@ -100,17 +104,14 @@ describe ApplicationController do
       }
       post '/login', params
       get '/logout'
+      follow_redirect!
       expect(last_response.body).to include("Welcome to Pilot Log Book")
     end
 
     it 'does not let a user logout if not logged in' do
       get '/logout'
+      follow_redirect!
       expect(last_response.body).to include("Welcome to Pilot Log Book")
-    end
-
-    it 'does not load /tweets if user not logged in' do
-      get '/tweets'
-      expect(last_response.location).to include("/login")
     end
 
     it 'does load user index if user is logged in' do
