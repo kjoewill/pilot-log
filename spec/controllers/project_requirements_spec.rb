@@ -224,18 +224,7 @@ describe ApplicationController do
     end
 
     context 'update' do
-
-    end
-
-    context 'delete' do
-
-    end
-
-  end
-
-  describe 'user show action' do
-    context 'logged in' do
-      it 'lets a user view their home page if logged in' do
+      it 'lets a user modify owned flight records' do
         k2 = User.create(username: "K2", password: "K2")
         k2.flight_records << FlightRecord.create(
           date: Date.today, aircraft_type: "SR20", from: "KFLY", to: "KCOS", remarks: "K2's flight", num_landings: 1, duration: 60)
@@ -251,20 +240,45 @@ describe ApplicationController do
         expect(page.body).to include("K2")
         expect(page.body).to include(Date.today.to_s)
 
+        first(:link, 'Details').click
+        expect(page.body).to include("Flight Record Page")
+
+        click_button 'Edit'
+        expect(page.body).to include("Edit Flight Record")
+
+        fill_in(:aircraft_type, :with => "Brand New Aircraft Type")
+        click_button 'Update'
+        expect(page.body).to include("Brand New Aircraft Type")
       end
     end
 
-    context 'logged out' do
-      it 'does not let a user view their home page when not logged in' do
-        get "/users/current_user"
-        follow_redirect!
-        expect(last_response.body).to include("Welcome to Pilot Log Book")
+    context 'delete' do
+      it 'lets a user delete owned flight records' do
+        k2 = User.create(username: "K2", password: "K2")
+        k2.flight_records << FlightRecord.create(
+          date: Date.today, aircraft_type: "SR20", from: "KFLY", to: "KCOS", remarks: "K2's flight", num_landings: 1, duration: 60)
+        k2.flight_records << FlightRecord.create(
+          date: Date.today, aircraft_type: "SR20", from: "KFLY", to: "KCOS", remarks: "Fun flight", num_landings: 1, duration: 60)
+
+        visit '/login'
+
+        fill_in(:username, :with => "K2")
+        fill_in(:password, :with => "K2")
+        click_button 'submit'
+
+        expect(page.body).to include("K2")
+        expect(page.body).to include(Date.today.to_s)
+
+        first(:link, 'Details').click
+        expect(page.body).to include("Flight Record Page")
+
+        click_button 'Delete'
+        expect(page).to have_content(Date.today.to_s, count: 1)
+
       end
     end
+
   end
-
-
-
 
   describe 'new action' do
     context 'logged in' do
