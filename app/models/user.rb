@@ -13,4 +13,8 @@ class User < ActiveRecord::Base
     self.flight_records.reduce(0) { |sum, rec| sum + rec.duration } / 60.0
   end
 
+  def number_of_landings
+    self.flight_records.reduce(0) { |sum, rec| sum + rec.num_landings }
+  end
+
 end

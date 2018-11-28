@@ -3,6 +3,8 @@
 <h3>Statistics</h3>
 <ul>
   <li>Numer of flights: <%=@user.flight_records.size%></li>
+  <li>Total flight hours:<%=@user.flight_hours.round(1)%></li>
+  <li>Total landings:    <%=@user.number_of_landings%></li>
 </ul>
 
 <a href="/flight_records/new">Log a new flight</a>
