@@ -9,4 +9,8 @@ class User < ActiveRecord::Base
     self.flight_records.size
   end
 
+  def flight_hours
+    self.flight_records.reduce(0) { |sum, rec| sum + rec.duration } / 60.0
+  end
+
 end

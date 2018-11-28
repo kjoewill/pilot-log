@@ -1,6 +1,9 @@
 <h2>Home Page for: <%=@user.username%> </h2>
 
 <h3>Statistics</h3>
+<ul>
+  <li>Numer of flights: <%=@user.flight_records.size%></li>
+</ul>
 
 <a href="/flight_records/new">Log a new flight</a>
 
