@@ -216,7 +216,7 @@ describe ApplicationController do
         expect(page.body).to include(Date.today.to_s)
 
         first(:link, 'Details').click
-        expect(page.body).to include("Flight Record Page")
+        expect(page.body).to include("Flight Record Inspect Page")
 
         click_button 'Edit'
         expect(page.body).to include("Edit Flight Record")
@@ -245,7 +245,7 @@ describe ApplicationController do
         expect(page.body).to include(Date.today.to_s)
 
         first(:link, 'Details').click
-        expect(page.body).to include("Flight Record Page")
+        expect(page.body).to include("Flight Record Inspect Page")
 
         click_button 'Delete'
         expect(page).to have_content(Date.today.to_s, count: 1)
@@ -498,5 +498,5 @@ describe ApplicationController do
     end
 
   end
-  
+
 end
