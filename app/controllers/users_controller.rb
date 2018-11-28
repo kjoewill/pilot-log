@@ -30,7 +30,7 @@ class UsersController < ApplicationController
 
   post "/login" do
     if params[:username].empty?
-      flash[:message] = "You must provide a fucking username!  Please try again."
+      flash[:message] = "Please provide a valid username!  Please try again."
     end
 
     user = User.find_by(:username => params[:username])

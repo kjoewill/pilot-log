@@ -1,17 +1,38 @@
 <h2>Home Page for: <%=@user.username%> </h2>
 
-<h3>Statistics</h3>
-<ul>
-  <li>Numer of flights: <%=@user.flight_records.size%></li>
-  <li>Total flight hours:<%=@user.flight_hours.round(1)%></li>
-  <li>Total landings:    <%=@user.number_of_landings%></li>
-</ul>
+<table>
+  <caption>Cumulative Statistics</caption>
+  <tr>
+    <th>Flight logs</th>
+    <th>Flight Hours</th>
+    <th>Landings</th>
+  </tr>
 
-<a href="/flight_records/new">Log a new flight</a>
+  <tr>
+    <td><%=@user.flight_records.size%></td>
+    <td><%=@user.flight_hours.round(1)%></td>
+    <td><%=@user.number_of_landings%></td>
+  </tr>
+</table>
+<br>
+<table>
+  <caption>Previous Flights</caption>
+  <tr>
+    <th>Date</th>
+    <th>Aircraft Type</th>
+    <th>Duration(mins)</th>
+    <th>Inspect</th>
+  </tr>
 
-<h4>Previous Flights</h4>
-<ul>
   <%@user.flight_records.each do |flight| %>
-    <li>Date: <%=flight.date%>, Aircraft: <%=flight.aircraft_type%><a href="/flight_records/<%=flight.id%>"> Details</a></li>
+  <tr>
+    <td><%=flight.date%></td>
+    <td><%=flight.aircraft_type%></td>
+    <td><%=flight.duration%></td>
+    <td><a href="/flight_records/<%=flight.id%>">Details</a></td>
+  </tr>
   <%end%>
-</ul>
+
+</table>
+
+<br><a href="/flight_records/new">Log a new flight</a>
