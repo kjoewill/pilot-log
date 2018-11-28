@@ -1,5 +1,7 @@
 class UsersController < ApplicationController
 
+  use Rack::Flash
+
   get '/signup' do
     if !logged_in?
       erb :"users/signup"
@@ -27,6 +29,10 @@ class UsersController < ApplicationController
   end
 
   post "/login" do
+    if params[:username].empty?
+      flash[:message] = "You must provide a fucking username!  Please try again."
+    end
+
     user = User.find_by(:username => params[:username])
 
     if user && user.authenticate(params[:password])
