@@ -10,8 +10,9 @@ also provides cumulative statistics such as total flight hours.
 * ActiveRecord
 * bcrypt
 * sqlite3
+* rack-flash3
 
 ## Installation
-* Clone this repository
-* Run 'bundle install'
-* Start a local server (like shotgun) in the root directory
+1. Clone this repository
+2. Run 'bundle install'
+3. Start a local server (like shotgun) in the root directory
