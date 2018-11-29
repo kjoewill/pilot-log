@@ -11,6 +11,7 @@
       <th>From</th>
       <th>To</th>
       <th>Landings</th>
+      <th>Remarks</th>
       <th>Duration</th>
     </tr>
 
@@ -19,6 +20,7 @@
       <td><input  type="text" name="aircraft_type" id="aircraft_type" value="<%=@flight_record.aircraft_type%>"></input></td>
       <td><input  type="text" name="from" id="from"value="<%=@flight_record.from%>"></input></td>
       <td><input  type="text" name="to" id="to" value="<%=@flight_record.to%>"></input></td>
+      <td><input  type="integer" name="num_landings" id="num_landings" value="<%=@flight_record.num_landings%>"></input></td>
       <td><input  type="text" name="remarks" id="remarks" value="<%=@flight_record.remarks%>"></input</td>
       <td><input  type="integer" name="duration" id="duration" value="<%=@flight_record.duration%>"></input></td>
     </tr>

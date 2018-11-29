@@ -2,26 +2,28 @@
 
 <form action="/flight_records" method="post">
 
-  <label>Flight Date:</label>
-  <input  type="date" name="date" id="date" value=<%=Date.today%>></input><br>
+  <table>
+    <caption>Flight Record</caption>
+    <tr>
+      <th>Date</th>
+      <th>Aircraft</th>
+      <th>From</th>
+      <th>To</th>
+      <th>Landings</th>
+      <th>Remarks</th>
+      <th>Duration</th>
+    </tr>
 
-  <label>Aircraft type:</label>
-  <input  type="text" name="aircraft_type" id="aircraft_type"></input><br>
-
-  <label>From:    </label>
-  <input  type="text" name="from" id="from"></input><br>
-
-  <label>To:</label>
-  <input  type="text" name="to" id="to"></input><br>
-
-  <label>Remarks:</label>
-  <input  type="text" name="remarks" id="remarks"></input><br>
-
-  <label>Num Landings:</label>
-  <input  type="text" name="num_landings" id="num_landings"></input><br>
-
-  <label>Duration(mins):</label>
-  <input  type="integer" name="duration" id="duration"></input><br><br>
+    <tr>
+      <td><input  type="date" name="date" id="date" value=<%=Date.today%>></input></td>
+      <td><input  type="text" name="aircraft_type" id="aircraft_type"></input></td>
+      <td><input  type="text" name="from" id="from"></input></td>
+      <td><input  type="text" name="to" id="to"></input></td>
+      <td><input  type="integer" name="num_landings" id="num_landings"></input></td>
+      <td><input  type="text" name="remarks" id="remarks"></input</td>
+      <td><input  type="integer" name="duration" id="duration"></input></td>
+    </tr>
+  </table>
 
   <input type="submit" value="Create" id="submit">
 </form>
