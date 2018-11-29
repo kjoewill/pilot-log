@@ -9,6 +9,7 @@ also provides cumulative statistics such as total flight hours.
 * Sinatra
 * ActiveRecord
 * bcrypt
+* sqlite3
 
 ## Installation
 * Clone this repository
