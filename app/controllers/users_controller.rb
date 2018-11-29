@@ -16,6 +16,9 @@ class UsersController < ApplicationController
       session[:user_id] = user.id
       redirect "/users/#{user.id}"
 		else
+      if error_message = user.errors[:username]
+        flash[:message] = "username: #{params[:username]} #{error_message}"
+      end
 			redirect "/signup"
 		end
 	end
