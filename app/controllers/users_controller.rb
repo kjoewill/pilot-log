@@ -53,7 +53,7 @@ class UsersController < ApplicationController
 
   get '/users/:id' do
     if logged_in?
-      if @user = User.find(params[:id])
+      if @user = User.find_by(id: params[:id])
         if @user.id == current_user.id
           erb :'/users/show'
         else

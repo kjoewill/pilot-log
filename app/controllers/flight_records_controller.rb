@@ -23,15 +23,10 @@ class FlightRecordsController < ApplicationController
     if @flight_record = FlightRecord.find_by(id: params[:id])
       if @flight_record.user == current_user
         erb :"flight_records/show"
-      else
-        @user = current_user
-        erb :"users/show"
       end
     else
       #need an error message here because we could not find it
-      binding.pry
-      @user = current_user
-      erb :"users/show"
+      redirect "/users/#{current_user.id}"
     end
   end
 
@@ -39,25 +34,21 @@ class FlightRecordsController < ApplicationController
     if @flight_record = FlightRecord.find_by(id: params[:id])
       if @flight_record.user == current_user
         erb :"flight_records/edit"
-      else
-        @user = current_user
-        erb :"users/show"
       end
     else
       #need an error message here because we could not find it
-      binding.pry
-      @user = current_user
-      erb :"users/show"
+      redirect "/users/#{current_user.id}"
     end
   end
 
   post '/flight_records/:id' do
-    if @flight_record = FlightRecord.find_by(id: params[:id]) && @flight_record.user == current_user && @flight_record.update(params)
-          erb :"flight_records/show"
+    if @flight_record = FlightRecord.find_by(id: params[:id])
+      if @flight_record.user == current_user && @flight_record.update(params)
+        erb :"flight_records/show"
+      end
     else
       redirect "flight_records/#{@flight_record.id}/edit"
     end
-
   end
 
   post '/flight_records/:id/delete' do
@@ -65,9 +56,7 @@ class FlightRecordsController < ApplicationController
     if flight_record.user == current_user
       FlightRecord.destroy(params[:id])
     end
-      @user = current_user
-      #erb :"users/show"
-      redirect "/users/#{@user.id}"
+    redirect "/users/#{current_user.id}"
   end
 
 end
