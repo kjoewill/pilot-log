@@ -52,13 +52,12 @@ class FlightRecordsController < ApplicationController
   end
 
   post '/flight_records/:id' do
-    @flight_record = FlightRecord.find(params[:id])
-    @flight_record.update(params)
-    if @flight_record.save
-      erb :"flight_records/show"
+    if @flight_record = FlightRecord.find_by(id: params[:id]) && @flight_record.user == current_user && @flight_record.update(params)
+          erb :"flight_records/show"
     else
       redirect "flight_records/#{@flight_record.id}/edit"
     end
+
   end
 
   post '/flight_records/:id/delete' do

@@ -12,7 +12,7 @@ class UsersController < ApplicationController
 
   post "/signup" do
 		user = User.create(params)
-    if user.save && user.authenticate(params[:password]) && user.authenticate(params[:username])
+    if user.save
       session[:user_id] = user.id
       redirect "/users/#{user.id}"
 		else
