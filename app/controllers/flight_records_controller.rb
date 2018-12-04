@@ -1,10 +1,10 @@
 class FlightRecordsController < ApplicationController
 
   post '/flight_records' do
-    @flight_record = FlightRecord.create(params)
-    @flight_record.user = current_user
-    if @flight_record.save
-      redirect to "/flight_records/#{@flight_record.id}"
+    flight_record = FlightRecord.create(params)
+    flight_record.user = current_user
+    if flight_record.save
+      redirect to "/flight_records/#{flight_record.id}"
     else
       redirect "flight_records/new"
     end
