@@ -21,7 +21,7 @@ class FlightRecordsController < ApplicationController
 
   get '/flight_records/:id' do
     if flight_record_belongs_to_current_user?(params[:id])
-        erb :"flight_records/show"
+      erb :"flight_records/show"
     else
       #need an error message here because we could not find it
       redirect "/users/#{current_user.id}"
@@ -55,7 +55,7 @@ class FlightRecordsController < ApplicationController
   private
 
     def flight_record_belongs_to_current_user?(id)
-      @flight_record = FlightRecord.find_by(id)
+      @flight_record = FlightRecord.find_by(id: id)
       !@flight_record.nil? && @flight_record.user == current_user
     end
 
